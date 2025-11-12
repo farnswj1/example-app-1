@@ -7,6 +7,7 @@ on:
       - production
 
 jobs:
+  # QA deployment job
   deploy-to-qa:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
@@ -14,18 +15,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Docker Hub
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: your-docker-username/your-app-name:latest
+          tags: ghcr.io/example-app-1/app:staging
 
       - name: Deploy to remote server
         uses: appleboy/ssh-action@v1.0.0
@@ -34,26 +36,30 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /path/to/your/app
-            docker-compose pull
-            docker-compose up -d --remove-orphans
+            cd ~/qa
+            docker pull ghcr.io/example-app-1/app:staging
+            docker compose up -d app
 
   # Production deployment job
-  # Note that this doesn't run automatically; trigger it manually when ready
   deploy-to-production:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/production'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Login to Docker Hub
+
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: your-docker-username/your-app-name:latest
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Docker image
+        run: docker pull ghcr.io/example-app-1/app:staging
+
+      - name: Tag and push Docker image for production
+        run: docker tag ghcr.io/example-app-1/app:staging ghcr.io/example-app-1/app:latest
+
+      - name: Push Docker image for production
+        run: docker push ghcr.io/example-app-1/app:latest
