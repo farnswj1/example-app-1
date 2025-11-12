@@ -34,7 +34,7 @@ jobs:
           push: true
           tags: ghcr.io/farnswj1/example-app-1/app:staging
 
-      - name: Deploy to remote server
+      - name: Deploy to staging/QA
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_STAGING_HOST }}
@@ -65,8 +65,8 @@ jobs:
       - name: Pull Docker image
         run: docker pull ghcr.io/farnswj1/example-app-1/app:staging
 
-      - name: Tag and push Docker image for production
+      - name: Tag Docker image for production
         run: docker tag ghcr.io/farnswj1/example-app-1/app:staging ghcr.io/farnswj1/example-app-1/app:latest
 
-      - name: Push Docker image for production
+      - name: Push Docker image to production
         run: docker push ghcr.io/farnswj1/example-app-1/app:latest
