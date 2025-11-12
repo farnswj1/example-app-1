@@ -5,7 +5,6 @@ on:
     workflows: ["Continuous Integration with UV"]
     types:
       - completed
-  push:
     branches:
       - master
       - production
