@@ -1,14 +1,14 @@
 name: Build, Test, and Deploy App
 
 on: [push]
-  #push:
-  #  branches:
-  #    - master
-  #    - production
-  #pull_request:
-  #  branches:
-  #    - master
-  #    - production
+  push:
+    branches:
+      - master
+      - production
+  pull_request:
+    branches:
+      - master
+      - production
 
 jobs:
   build-and-test:
