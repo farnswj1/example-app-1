@@ -30,7 +30,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/example-app-1/app:staging
+          tags: ghcr.io/farnswj1/example-app-1/app:staging
 
       - name: Deploy to remote server
         uses: appleboy/ssh-action@v1.0.0
@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.SSH_STAGING_PRIVATE_KEY }}
           script: |
             cd ~/qa
-            docker pull ghcr.io/example-app-1/app:staging
+            docker pull ghcr.io/farnswj1/example-app-1/app:staging
             docker compose up -d app
 
   # Production deployment job
@@ -59,10 +59,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Docker image
-        run: docker pull ghcr.io/example-app-1/app:staging
+        run: docker pull ghcr.io/farnswj1/example-app-1/app:staging
 
       - name: Tag and push Docker image for production
-        run: docker tag ghcr.io/example-app-1/app:staging ghcr.io/example-app-1/app:latest
+        run: docker tag ghcr.io/farnswj1/example-app-1/app:staging ghcr.io/farnswj1/example-app-1/app:latest
 
       - name: Push Docker image for production
-        run: docker push ghcr.io/example-app-1/app:latest
+        run: docker push ghcr.io/farnswj1/example-app-1/app:latest
