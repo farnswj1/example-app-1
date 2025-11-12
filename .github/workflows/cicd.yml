@@ -1,14 +1,14 @@
 name: Build, Test, and Deploy App
 
-on:
-  push:
-    branches:
-      - master
-      - production
-  pull_request:
-    branches:
-      - master
-      - production
+on: [push]
+  #push:
+  #  branches:
+  #    - master
+  #    - production
+  #pull_request:
+  #  branches:
+  #    - master
+  #    - production
 
 jobs:
   build-and-test:
@@ -30,65 +30,67 @@ jobs:
 
       - name: Run tests
         run: uv run pytest # Replace 'pytest' with your chosen test runner command
-  # QA deployment job
-  deploy-to-qa:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    needs: build-and-test
-    permissions:
-      packages: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/farnswj1/example-app-1/app:staging
-
-      - name: Deploy to staging/QA
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_STAGING_HOST }}
-          username: ${{ secrets.SSH_STAGING_USERNAME }}
-          key: ${{ secrets.SSH_STAGING_PRIVATE_KEY }}
-          script: |
-            cd ~/qa
-            docker pull ghcr.io/farnswj1/example-app-1/app:staging
-            docker compose up -d app
-
-  # Production deployment job
-  deploy-to-production:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/production'
-    needs: build-and-test
-    permissions:
-      packages: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull Docker image
-        run: docker pull ghcr.io/farnswj1/example-app-1/app:staging
-
-      - name: Tag Docker image for production
-        run: docker tag ghcr.io/farnswj1/example-app-1/app:staging ghcr.io/farnswj1/example-app-1/app:latest
-
-      - name: Push Docker image to production
-        run: docker push ghcr.io/farnswj1/example-app-1/app:latest
+#  # QA deployment job
+#  deploy-to-qa:
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/master'
+#    needs: build-and-test
+#    permissions:
+#      packages: write
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Log in to GitHub Container Registry
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          push: true
+#          tags: ghcr.io/farnswj1/example-app-1/app:staging
+#
+#      - name: Deploy to staging/QA
+#        uses: appleboy/ssh-action@v1.0.0
+#        with:
+#          host: ${{ secrets.SSH_STAGING_HOST }}
+#          username: ${{ secrets.SSH_STAGING_USERNAME }}
+#          key: ${{ secrets.SSH_STAGING_PRIVATE_KEY }}
+#          script: |
+#            cd ~/qa
+#            docker pull ghcr.io/farnswj1/example-app-1/app:staging
+#            docker compose up -d app
+#
+#  # Production deployment job
+#  deploy-to-production:
+#    runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/production'
+#    needs: build-and-test
+#    permissions:
+#      packages: write
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Log in to GitHub Container Registry
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Pull Docker image
+#        run: docker pull ghcr.io/farnswj1/example-app-1/app:staging
+#
+#      - name: Tag Docker image for production
+#        run: docker tag ghcr.io/farnswj1/example-app-1/app:staging ghcr.io/farnswj1/example-app-1/app:latest
+#
+#      - name: Push Docker image to production
+#        run: docker push ghcr.io/farnswj1/example-app-1/app:latest
+#
