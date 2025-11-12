@@ -7,10 +7,14 @@ on:
       - production
 
 jobs:
+  build-and-test:
+    uses: ./.github/workflows/ci.yml
+
   # QA deployment job
   deploy-to-qa:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
+    needs: [build-and-test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,6 +48,7 @@ jobs:
   deploy-to-production:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/production'
+    needs: [build-and-test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
