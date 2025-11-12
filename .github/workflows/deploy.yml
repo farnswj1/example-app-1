@@ -3,12 +3,13 @@ name: Deploy Docker Application
 on:
   push:
     branches:
-      - main
+      - master
+      - production
 
 jobs:
   deploy-to-qa:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
