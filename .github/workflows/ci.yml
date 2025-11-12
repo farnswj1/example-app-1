@@ -1,0 +1,31 @@
+name: Continuous Integration with UV
+
+on:
+  push:
+    branches:
+      - master
+      - production
+  pull_request:
+    branches:
+      - master
+      - production
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v2  # Use the latest version of setup-uv
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      #- name: Build project (optional, if your project is a package)
+      #  run: uv build
+
+      - name: Run tests
+        run: uv run pytest # Replace 'pytest' with your chosen test runner command
