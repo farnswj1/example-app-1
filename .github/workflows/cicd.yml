@@ -30,6 +30,7 @@ jobs:
 
       - name: Run tests
         run: uv run pytest # Replace 'pytest' with your chosen test runner command
+
   # QA deployment job
   deploy-to-qa:
     runs-on: ubuntu-latest
