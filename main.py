@@ -13,7 +13,7 @@ class Person(BaseModel):
 
 @app.get("/")
 def root() -> dict[str, str]:
-    return {"message": "Hello DevLaunch! From app1!"}
+    return {"message": "Hello, from app!"}
 
 
 @app.get("/greet/{person_name}")
